@@ -1,9 +1,13 @@
 import React from 'react';
-import styles from './Button.scss';
+import styles from './Button.module.scss';
 
-export default function Button({ label, onClick }: ButtonProps): JSX.Element {
+export default function Button({
+  label,
+  onClick,
+  type = 'primary',
+}: ButtonProps): JSX.Element {
   return (
-    <button className={styles.button} onClick={onClick}>
+    <button className={styles.button + ' ' + styles[type]} onClick={onClick}>
       {label}
     </button>
   );
@@ -12,4 +16,5 @@ export default function Button({ label, onClick }: ButtonProps): JSX.Element {
 type ButtonProps = {
   label: string;
   onClick: () => Promise<void>;
+  type?: 'primary' | 'secondary';
 };

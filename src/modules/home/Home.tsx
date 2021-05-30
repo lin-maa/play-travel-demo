@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { fetchItems } from '../../api/index';
 import Navbar from '../../components/navbar/Navbar';
 import Button from '../../components/button/Button';
-import styles from './Home.scss';
+import styles from './Home.module.scss';
 
 export default function Home(): JSX.Element {
   const [searchValue, setSearchValue] = useState<string>('');
@@ -16,27 +16,33 @@ export default function Home(): JSX.Element {
           let { data } = await fetchItems(search);
           setImgUrls(data.results.map((x) => x.urls.regular));
           setTags(
-            data.results
-              .map((x) => x.tags.filter((t) => t.type === 'search'))
-              .reduce((acc, item) => [...acc, ...item], [])
-              .map((x) => x.title)
+            Array.from(
+              new Set(
+                data.results
+                  .map((x) => x.tags.filter((t) => t.type === 'search'))
+                  .reduce((acc, item) => [...acc, ...item], [])
+                  .map((x) => x.title)
+              )
+            )
           );
         }}
       />
       <main className={styles.contentWrap}>
-        <h1>{searchValue}</h1>
+        <h1 className={styles.title}>{searchValue}</h1>
         <div className={styles.tagWrap}>
           {tags.map((item, index) => {
             return (
-              <Button
-                key={index}
-                label={item}
-                onClick={async () => {
-                  setSearchValue(item);
-                  let { data } = await fetchItems(item);
-                  setImgUrls(data.results.map((x) => x.urls.regular));
-                }}
-              />
+              <div key={index}>
+                <Button
+                  type="secondary"
+                  label={item}
+                  onClick={async () => {
+                    setSearchValue(item);
+                    let { data } = await fetchItems(item);
+                    setImgUrls(data.results.map((x) => x.urls.regular));
+                  }}
+                />
+              </div>
             );
           })}
         </div>
